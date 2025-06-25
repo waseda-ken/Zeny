@@ -7,6 +7,5 @@ struct ReceiptScannerViewControllerWrapper: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> ReceiptScannerViewController {
         ReceiptScannerViewController()
     }
-
     func updateUIViewController(_ uiViewController: ReceiptScannerViewController, context: Context) {}
 }

@@ -1,11 +1,7 @@
-//
-//  PurchaseRecord.swift
-//  Zeny
-//
-//  Created by 永田健人 on 2025/06/25.
-//
-
+// PurchaseRecord.swift
 import Foundation
+
+/// 家計簿データモデル
 struct PurchaseRecord: Identifiable {
     let id = UUID()
     let storeName: String
