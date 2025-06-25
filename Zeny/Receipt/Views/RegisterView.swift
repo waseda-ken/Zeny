@@ -1,12 +1,5 @@
+// RegisterView.swift
 import SwiftUI
-
-/// 家計簿データのモデル
-struct PurchaseRecord: Identifiable {
-    let id = UUID()
-    let storeName: String
-    let purchaseDate: Date
-    let totalAmount: Double
-}
 
 /// レシート登録用の SwiftUI View
 struct RegisterView: View {
@@ -45,12 +38,8 @@ struct RegisterView: View {
         }
     }
 
-    // MARK: - 内部ロジック
     private func isInputValid() -> Bool {
-        guard !storeName.isEmpty,
-              Double(totalAmountText) != nil
-        else { return false }
-        return true
+        !storeName.isEmpty && Double(totalAmountText) != nil
     }
 
     private func saveRecord() {
@@ -64,7 +53,6 @@ struct RegisterView: View {
     }
 }
 
-// MARK: - プレビュー用
 struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
         RegisterView(onSave: { record in
