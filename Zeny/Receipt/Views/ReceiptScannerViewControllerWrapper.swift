@@ -1,16 +1,11 @@
-//
-//  ReceiptScannerViewControllerWrapper.swift
-//  Zeny
-//
-//  Created by 永田健人 on 2025/06/11.
-//
-
+// ReceiptScannerViewControllerWrapper.swift
 import SwiftUI
 
 struct ReceiptScannerViewControllerWrapper: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> ReceiptScannerViewController {
-        return ReceiptScannerViewController()
-    }
+    typealias UIViewControllerType = ReceiptScannerViewController
 
+    func makeUIViewController(context: Context) -> ReceiptScannerViewController {
+        ReceiptScannerViewController()
+    }
     func updateUIViewController(_ uiViewController: ReceiptScannerViewController, context: Context) {}
 }

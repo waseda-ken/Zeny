@@ -1,51 +1,52 @@
+// RegisterView.swift
 import SwiftUI
 
-// 家計簿登録用のSwiftUI View
+/// レシート登録用フォーム
 struct RegisterView: View {
-    // 受け渡し用データ
-    @State var storeName: String = ""
-    @State var purchaseDate: Date = Date()
-    @State var totalAmount: String = ""
-
-    // 保存完了時のコールバック
+    @State private var storeName = ""
+    @State private var purchaseDate = Date()
+    @State private var totalAmountText = ""
     var onSave: ((PurchaseRecord) -> Void)?
 
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("店舗名")) {
+                Section("店舗名") {
                     TextField("例: コンビニA", text: $storeName)
                 }
-                Section(header: Text("購入日")) {
+                Section("購入日") {
                     DatePicker("日付を選択", selection: $purchaseDate, displayedComponents: .date)
                 }
-                Section(header: Text("合計金額")) {
-                    TextField("例: 1200", text: $totalAmount)
+                Section("合計金額") {
+                    TextField("例: 1200", text: $totalAmountText)
                         .keyboardType(.numberPad)
                 }
             }
             .navigationTitle("レシート登録")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") {
-                        // 入力チェック
-                        guard let amount = Double(totalAmount) else { return }
-                        let record = PurchaseRecord(storeName: storeName,
-                                                    purchaseDate: purchaseDate,
-                                                    totalAmount: amount)
-                        onSave?(record)
-                    }
+                    Button("保存") { saveRecord() }
+                        .disabled(!isInputValid())
                 }
             }
         }
     }
+
+    private func isInputValid() -> Bool {
+        !storeName.isEmpty && Double(totalAmountText) != nil
+    }
+
+    private func saveRecord() {
+        guard let amt = Double(totalAmountText) else { return }
+        let record = PurchaseRecord(storeName: storeName,
+                                    purchaseDate: purchaseDate,
+                                    totalAmount: amt)
+        onSave?(record)
+    }
 }
 
-// プレビュー用Mock
 struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView() { record in
-            print("保存: \(record)")
-        }
+        RegisterView(onSave: { rec in print(rec) })
     }
 }

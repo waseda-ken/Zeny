@@ -3,27 +3,29 @@ import Vision
 import VisionKit
 import PhotosUI
 
+/// レシートスキャン＆OCR＋読み取り範囲指定付きビューコントローラ
 final class ReceiptScannerViewController: UIViewController,
     VNDocumentCameraViewControllerDelegate,
     PHPickerViewControllerDelegate {
 
-    /// タップした場所の種別
+    /// タップした場所種別
     enum TapRegion { case topLeft, topRight, bottomLeft, bottomRight, center }
 
     // MARK: - UI Elements
-    private var receiptImageView: UIImageView!
-    private var regionView: UIView!
-    private var recognizeButton: UIButton!
-    private var resultTextView: UITextView!
+    private var receiptImageView = UIImageView()
+    private var regionView = UIView()
+    private var scanButton = UIButton(type: .system)
+    private var recognizeButton = UIButton(type: .system)
+    private var resultTextView = UITextView()
 
-    // 操作フラグ
+    // MARK: - State
     private var tappedRegion: TapRegion? = nil
     private var hasPromptedImageSource = false
 
-    // 定数
-    private let regionViewCenterRegion = CGSize(width: 40, height: 40)
-    private let regionViewMinSize = CGSize(width: 60, height: 60)
-    private let regionViewDefaultSize = CGSize(width: 200, height: 200)
+    // MARK: - Constants
+    private let regionDefaultSize = CGSize(width: 200, height: 200)
+    private let regionCenterSize = CGSize(width: 40, height: 40)
+    private let regionMinSize = CGSize(width: 60, height: 60)
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -44,67 +46,65 @@ final class ReceiptScannerViewController: UIViewController,
         }
     }
 
-    // MARK: - UI Setup
+    // MARK: - Setup
     private func setupImageView() {
-        receiptImageView = UIImageView()
         receiptImageView.contentMode = .scaleAspectFit
         receiptImageView.translatesAutoresizingMaskIntoConstraints = false
         receiptImageView.isUserInteractionEnabled = true
         view.addSubview(receiptImageView)
         NSLayoutConstraint.activate([
-            receiptImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            receiptImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            receiptImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            receiptImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5)
+            receiptImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            receiptImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            receiptImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            receiptImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4)
         ])
     }
 
     private func setupRegionView() {
-        regionView = UIView(frame: CGRect(origin: .zero, size: regionViewDefaultSize))
+        regionView.frame = CGRect(origin: .zero, size: regionDefaultSize)
         regionView.center = view.center
         regionView.backgroundColor = .clear
         regionView.layer.borderColor = UIColor.red.cgColor
         regionView.layer.borderWidth = 2
         regionView.isUserInteractionEnabled = true
-        regionView.isMultipleTouchEnabled = true
         view.addSubview(regionView)
-        // Pan for move
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-        regionView.addGestureRecognizer(pan)
-        // Pinch for scale
-        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
-        regionView.addGestureRecognizer(pinch)
     }
 
     private func setupButtons() {
-        recognizeButton = UIButton(type: .system)
-        recognizeButton.setTitle("範囲をOCR", for: .normal)
+        scanButton.setTitle("スキャン/フォト選択", for: .normal)
+        scanButton.translatesAutoresizingMaskIntoConstraints = false
+        scanButton.addTarget(self, action: #selector(promptImageSource), for: .touchUpInside)
+        view.addSubview(scanButton)
+
+        recognizeButton.setTitle("OCR実行", for: .normal)
         recognizeButton.translatesAutoresizingMaskIntoConstraints = false
         recognizeButton.addTarget(self, action: #selector(cropAndRecognize), for: .touchUpInside)
         view.addSubview(recognizeButton)
+
         NSLayoutConstraint.activate([
-            recognizeButton.topAnchor.constraint(equalTo: receiptImageView.bottomAnchor, constant: 16),
-            recognizeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            scanButton.topAnchor.constraint(equalTo: receiptImageView.bottomAnchor, constant: 12),
+            scanButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            recognizeButton.topAnchor.constraint(equalTo: receiptImageView.bottomAnchor, constant: 12),
+            recognizeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
 
     private func setupResultView() {
-        resultTextView = UITextView()
         resultTextView.isEditable = false
         resultTextView.font = .systemFont(ofSize: 16)
         resultTextView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(resultTextView)
         NSLayoutConstraint.activate([
-            resultTextView.topAnchor.constraint(equalTo: recognizeButton.bottomAnchor, constant: 16),
+            resultTextView.topAnchor.constraint(equalTo: scanButton.bottomAnchor, constant: 12),
             resultTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             resultTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            resultTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            resultTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
     }
 
-    // MARK: - Image Source Selection
+    // MARK: - Image Source
     @objc private func promptImageSource() {
-        let ac = UIAlertController(title: "レシート画像を取得", message: nil, preferredStyle: .actionSheet)
+        let ac = UIAlertController(title: "レシート画像取得", message: nil, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "カメラでスキャン", style: .default) { _ in self.startCameraScan() })
         ac.addAction(UIAlertAction(title: "フォトライブラリ", style: .default) { _ in self.startPhotoPicker() })
         ac.addAction(UIAlertAction(title: "キャンセル", style: .cancel))
@@ -113,16 +113,16 @@ final class ReceiptScannerViewController: UIViewController,
 
     private func startCameraScan() {
         guard VNDocumentCameraViewController.isSupported else { return }
-        let scanner = VNDocumentCameraViewController()
-        scanner.delegate = self
-        present(scanner, animated: true)
+        let cam = VNDocumentCameraViewController()
+        cam.delegate = self
+        present(cam, animated: true)
     }
 
     private func startPhotoPicker() {
-        var config = PHPickerConfiguration()
-        config.filter = .images
-        config.selectionLimit = 1
-        let picker = PHPickerViewController(configuration: config)
+        var cfg = PHPickerConfiguration()
+        cfg.filter = .images
+        cfg.selectionLimit = 1
+        let picker = PHPickerViewController(configuration: cfg)
         picker.delegate = self
         present(picker, animated: true)
     }
@@ -133,7 +133,9 @@ final class ReceiptScannerViewController: UIViewController,
         controller.dismiss(animated: true)
         receiptImageView.image = scan.imageOfPage(at: 0)
         regionView.center = view.center
-        regionView.transform = .identity
+    }
+    func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
+        controller.dismiss(animated: true)
     }
 
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
@@ -144,41 +146,20 @@ final class ReceiptScannerViewController: UIViewController,
             DispatchQueue.main.async {
                 self.receiptImageView.image = img as? UIImage
                 self.regionView.center = self.view.center
-                self.regionView.transform = .identity
             }
         }
     }
 
-    // MARK: - Gesture Handlers
-    @objc private func handlePan(_ g: UIPanGestureRecognizer) {
-        let t = g.translation(in: view)
-        if let v = g.view {
-            v.center.x += t.x
-            v.center.y += t.y
-            g.setTranslation(.zero, in: view)
-        }
-    }
-
-    @objc private func handlePinch(_ g: UIPinchGestureRecognizer) {
-        if let v = g.view {
-            v.bounds.size.width *= g.scale
-            v.bounds.size.height *= g.scale
-            g.scale = 1
-        }
-    }
-
-    // MARK: - Touch Handling for Resize
+    // MARK: - Touch Handlers for Region Resize/Move
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let p = touches.first?.location(in: view), regionView.frame.contains(p) else {
-            tappedRegion = nil; return
-        }
+        guard let p = touches.first?.location(in: view), regionView.frame.contains(p) else { tappedRegion = nil; return }
         let lp = view.convert(p, to: regionView)
         let c = CGPoint(x: regionView.bounds.midX, y: regionView.bounds.midY)
-        let rectC = CGRect(x: c.x-regionViewCenterRegion.width/2,
-                           y: c.y-regionViewCenterRegion.height/2,
-                           width: regionViewCenterRegion.width,
-                           height: regionViewCenterRegion.height)
-        if rectC.contains(lp) { tappedRegion = .center }
+        let centerRect = CGRect(x: c.x-regionCenterSize.width/2,
+                                 y: c.y-regionCenterSize.height/2,
+                                 width: regionCenterSize.width,
+                                 height: regionCenterSize.height)
+        if centerRect.contains(lp) { tappedRegion = .center }
         else if lp.x < c.x { tappedRegion = lp.y < c.y ? .topLeft : .bottomLeft }
         else { tappedRegion = lp.y < c.y ? .topRight : .bottomRight }
     }
@@ -188,45 +169,41 @@ final class ReceiptScannerViewController: UIViewController,
         var f = regionView.frame
         switch r {
         case .topLeft:
-            let dx = f.origin.x - p.x; let dy = f.origin.y - p.y
-            f.origin.x = p.x; f.origin.y = p.y
-            f.size.width += dx; f.size.height += dy
+            let dx = f.origin.x - p.x, dy = f.origin.y - p.y
+            f.origin.x = p.x; f.origin.y = p.y; f.size.width += dx; f.size.height += dy
         case .topRight:
             let dy = f.origin.y - p.y
-            f.origin.y = p.y
-            f.size.width = p.x - f.origin.x
-            f.size.height += dy
+            f.origin.y = p.y; f.size.width = p.x - f.origin.x; f.size.height += dy
         case .bottomLeft:
             let dx = f.origin.x - p.x
-            f.origin.x = p.x
-            f.size.width += dx
-            f.size.height = p.y - f.origin.y
+            f.origin.x = p.x; f.size.width += dx; f.size.height = p.y - f.origin.y
         case .bottomRight:
-            f.size.width = p.x - f.origin.x
-            f.size.height = p.y - f.origin.y
+            f.size.width = p.x - f.origin.x; f.size.height = p.y - f.origin.y
         case .center:
             regionView.center = p; return
         }
-        f.size.width = max(f.size.width, regionViewMinSize.width)
-        f.size.height = max(f.size.height, regionViewMinSize.height)
+        f.size.width = max(f.size.width, regionMinSize.width)
+        f.size.height = max(f.size.height, regionMinSize.height)
         regionView.frame = f
     }
 
-    // MARK: - Crop & OCR
+    // MARK: - OCR Execution
     @objc private func cropAndRecognize() {
         guard let img = receiptImageView.image else { return }
         let cropRect = convertRect(regionView.frame, from: receiptImageView, to: img)
         guard let cg = img.cgImage?.cropping(to: cropRect) else { return }
-        recognizeText(in: UIImage(cgImage: cg))
+        performOCR(on: UIImage(cgImage: cg))
     }
 
-    private func recognizeText(in image: UIImage) {
+    private func performOCR(on image: UIImage) {
         resultTextView.text = "認識中…"
         guard let cg = image.cgImage else { return }
-        let req = VNRecognizeTextRequest { req, err in
+        let req = VNRecognizeTextRequest { [weak self] req, err in
             DispatchQueue.main.async {
-                if let e = err { self.resultTextView.text = "認識エラー: \(e.localizedDescription)" }
-                else {
+                guard let self = self else { return }
+                if let e = err {
+                    self.resultTextView.text = "認識エラー: \(e.localizedDescription)"
+                } else {
                     let lines = (req.results as? [VNRecognizedTextObservation])?.compactMap { $0.topCandidates(1).first?.string } ?? []
                     self.resultTextView.text = lines.joined(separator: "\n")
                 }
@@ -234,19 +211,17 @@ final class ReceiptScannerViewController: UIViewController,
         }
         req.recognitionLevel = .accurate
         req.recognitionLanguages = ["ja-JP"]
-        let handler = VNImageRequestHandler(cgImage: cg, options: [:])
-        DispatchQueue.global(qos: .userInitiated).async { try? handler.perform([req]) }
+        try? VNImageRequestHandler(cgImage: cg, options: [:]).perform([req])
     }
 
-    // MARK: - Helpers
+    // MARK: - Helper
     private func convertRect(_ rect: CGRect, from iv: UIImageView, to image: UIImage) -> CGRect {
         let ivs = iv.bounds.size, imgs = image.size
         let scale = min(ivs.width/imgs.width, ivs.height/imgs.height)
         let draw = CGSize(width: imgs.width*scale, height: imgs.height*scale)
-        let xoff = (ivs.width-draw.width)/2, yoff = (ivs.height-draw.height)/2
+        let xOff = (ivs.width - draw.width)/2, yOff = (ivs.height - draw.height)/2
         var r = rect
-        r.origin.x = (r.origin.x-xoff)/scale
-        r.origin.y = (r.origin.y-yoff)/scale
+        r.origin.x = (r.origin.x - xOff)/scale; r.origin.y = (r.origin.y - yOff)/scale
         r.size.width /= scale; r.size.height /= scale
         return r
     }
