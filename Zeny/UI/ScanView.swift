@@ -3,34 +3,39 @@ import SwiftUI
 
 struct ScanView: View {
     @State private var showScanner = false
-    @State private var recognizedText = ""      // ここに結果が入る
-    @State private var parsedRecord: PurchaseRecord?
+    @State private var recognizedText = ""              // OCR結果を受け取る
+    @State private var parsedRecord: PurchaseRecord?    // パース後のレコード
 
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
+                // 1. スキャン開始ボタン
                 Button("レシートをスキャン") {
                     showScanner = true
                 }
-                .sheet(isPresented: $showScanner) {
-                    ReceiptScannerViewControllerWrapper(recognizedText: $recognizedText)
-                }
+                .padding()
+                .background(Color.accentColor)
+                .foregroundColor(.white)
+                .cornerRadius(8)
 
+                // 2. OCR結果プレビュー
                 if !recognizedText.isEmpty {
                     Text("OCR結果:")
+                        .font(.headline)
                     ScrollView {
                         Text(recognizedText)
                             .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(8)
-                    }.frame(maxHeight: 200)
+                    }
+                    .frame(maxHeight: 200)
 
-                    // 認識文字列を解析してPurchaseRecordに変換する処理を挟む
+                    // 3. パースしてPurchaseRecordに変換
                     Button("登録画面へ進む") {
-                        // 例：amountとdateとstoreNameを簡易パース
                         let amount = parseAmount(from: recognizedText)
                         let name   = parseStoreName(from: recognizedText)
-                        self.parsedRecord = PurchaseRecord(
+                        parsedRecord = PurchaseRecord(
                             storeName: name,
                             purchaseDate: Date(),
                             totalAmount: amount
@@ -38,36 +43,59 @@ struct ScanView: View {
                     }
                     .disabled(parsedRecord != nil)
                     .padding(.top)
-
-                    // parsedRecordができたらRegisterViewへ
-                    if let rec = parsedRecord {
-                        NavigationLink("詳細編集して保存", destination:
-                            RegisterView(onSave: { saved in
-                                // 保存処理…
-                                print("保存されたレコード:", saved)
-                            })
-                            .onAppear {
-                                // 初期値セットはRegisterView側にプロパティ追加で対応
-                            }
-                        )
-                    }
                 }
 
                 Spacer()
             }
             .padding()
             .navigationTitle("スキャン")
+            // 4. モーダルでUIViewControllerラッパーを呼び出し
+            .sheet(isPresented: $showScanner) {
+                ReceiptScannerViewControllerWrapper(recognizedText: $recognizedText)
+            }
+            // 5. parsedRecordがセットされたらRegisterViewへ遷移
+            .background(
+                NavigationLink(
+                    destination: {
+                        if let rec = parsedRecord {
+                            RegisterView(record: rec) { saved in
+                                // 保存後の処理（例: ViewModelへ渡すなど）
+                                print("保存されたレコード:", saved)
+                            }
+                        } else {
+                            EmptyView()
+                        }
+                    }(),
+                    isActive: Binding(
+                        get: { parsedRecord != nil },
+                        set: { if !$0 { parsedRecord = nil } }
+                    )
+                ) {
+                    EmptyView()
+                }
+                .hidden()
+            )
         }
     }
 
-    // シンプルパース例
+    // MARK: - OCR文字列パース例
+
     private func parseAmount(from text: String) -> Double {
-        // 正規表現で数字だけ抜き出し etc
-        Double(text.components(separatedBy: CharacterSet.decimalDigits.inverted)
-            .joined()) ?? 0
+        // 数字と小数点だけ抽出
+        let numString = text
+            .components(separatedBy: CharacterSet(charactersIn: "0123456789.").inverted)
+            .joined()
+        return Double(numString) ?? 0
     }
+
     private func parseStoreName(from text: String) -> String {
-        // 例として最初の行を店名とみなす
+        // 最初の行を店名とみなす
         text.components(separatedBy: "\n").first ?? ""
+    }
+}
+
+struct ScanView_Previews: PreviewProvider {
+    static var previews: some View {
+        ScanView()
     }
 }
