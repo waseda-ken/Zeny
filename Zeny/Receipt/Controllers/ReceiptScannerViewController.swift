@@ -20,6 +20,8 @@ final class ReceiptScannerViewController: UIViewController,
 
     // MARK: - State
     private var tappedRegion: TapRegion? = nil
+    /// OCR結果を渡すコールバック
+    var onRecognized: ((String) -> Void)?
     private var hasPromptedImageSource = false
 
     // MARK: - Constants
@@ -205,7 +207,10 @@ final class ReceiptScannerViewController: UIViewController,
                     self.resultTextView.text = "認識エラー: \(e.localizedDescription)"
                 } else {
                     let lines = (req.results as? [VNRecognizedTextObservation])?.compactMap { $0.topCandidates(1).first?.string } ?? []
-                    self.resultTextView.text = lines.joined(separator: "\n")
+                    let text = lines.joined(separator: "\n")
+                    self.resultTextView.text = text
+                    // 完了したらクロージャで渡す
+                    self.onRecognized?(text)
                 }
             }
         }
