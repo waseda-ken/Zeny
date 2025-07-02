@@ -5,10 +5,10 @@ struct ScanView: View {
     @State private var showScanner = false
     @State private var recognizedText = ""
     @State private var parsedRecord: PurchaseRecord?
-    @State private var showRegister = false    // ← 追加
+    @State private var showRegister = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 Button("レシートをスキャン") {
                     showScanner = true
@@ -39,7 +39,7 @@ struct ScanView: View {
                             purchaseDate: Date(),
                             totalAmount: amount
                         )
-                        showRegister = true     // ← フラグを立てる
+                        showRegister = true     // フラグを立てる
                     }
                     .disabled(parsedRecord != nil)
                     .padding(.top)
@@ -52,19 +52,18 @@ struct ScanView: View {
             .sheet(isPresented: $showScanner) {
                 ReceiptScannerViewControllerWrapper(recognizedText: $recognizedText)
             }
-
-            // 隠し NavigationLink
-            NavigationLink(
-                destination: {
-                    RegisterView(record: parsedRecord!) { saved in
+            // iOS16+推奨 API
+            .navigationDestination(isPresented: $showRegister) {
+                // parsedRecord が nil の場合は EmptyView で安全に扱う
+                if let record = parsedRecord {
+                    RegisterView(record: record) { saved in
+                        // 保存後の処理
                         print("保存されたレコード:", saved)
                     }
-                }(),
-                isActive: $showRegister
-            ) {
-                EmptyView()
+                } else {
+                    EmptyView()
+                }
             }
-            .hidden()
         }
     }
 
