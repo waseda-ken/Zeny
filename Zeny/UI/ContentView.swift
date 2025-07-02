@@ -12,6 +12,7 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
+            // タブに応じた画面切り替え
             Group {
                 switch selectedTab {
                 case .calendar: CalendarView()
@@ -22,10 +23,18 @@ struct ContentView: View {
             }
             .edgesIgnoringSafeArea(.all)
 
+            // カスタムタブバーを画面下部に重ねる
             VStack {
                 Spacer()
                 CustomTabBar(selectedTab: $selectedTab)
             }
         }
+    }
+}
+
+// プレビュー用
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }
