@@ -13,27 +13,29 @@ struct CustomTabBar: View {
     var body: some View {
         HStack {
             ForEach(TabItem.allCases, id: \.self) { item in
-                if item == .scan {
-                    Spacer()
-                    ZStack {
-                        Circle()/* … 背景 */
-                        Button { selectedTab = .scan } label: {
-                            Image(systemName: item.iconName)/* … */
-                        }
+                Button {
+                    selectedTab = item
+                } label: {
+                    VStack(spacing: 4) {
+                        Image(systemName: item.iconName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
+                        Text(item.title)
+                            .font(.caption)
                     }
-                    .offset(y: -24)
-                    Spacer()
-                } else {
-                    Button { selectedTab = item } label: {
-                        VStack { Image(systemName: item.iconName); Text(item.title) }
-                    }
+                    .foregroundColor(selectedTab == item ? .accentColor : .gray)
                     .frame(maxWidth: .infinity)
                 }
             }
         }
-        .padding(/* … */)
-        .background(/* … */)
+        .padding(.horizontal)
+        .padding(.top, 6)
+        .background(
+            Color(UIColor.systemBackground)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .shadow(radius: 2)
+        )
         .padding(.horizontal, 16)
     }
 }
-
