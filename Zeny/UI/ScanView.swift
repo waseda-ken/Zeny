@@ -7,4 +7,10 @@
 
 import SwiftUI
 
-struct ScanView: View {var body: some View {Text("Scan")}}
+struct ScanView: View {
+    var body: some View {
+        Text("Scan View")
+            .font(.largeTitle)
+            .foregroundColor(.blue)
+    }
+}

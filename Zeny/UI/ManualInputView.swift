@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ManualInputView: View {
     var body: some View {
-        Text("Manual")
+        Text("Manual Input View")
+            .font(.largeTitle)
+            .foregroundColor(.pink)
     }
 }

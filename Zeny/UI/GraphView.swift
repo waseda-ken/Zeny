@@ -7,4 +7,10 @@
 
 import SwiftUI
 
-struct GraphView: View { var body: some View { Text("Graph") } }
+struct GraphView: View {
+    var body: some View {
+        Text("Graph View")
+            .font(.largeTitle)
+            .foregroundColor(.green)
+    }
+}
