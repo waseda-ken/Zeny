@@ -5,7 +5,7 @@ import SwiftUI
 struct ZenyApp: App {
     var body: some Scene {
         WindowGroup {
-            ReceiptScannerViewControllerWrapper()
+            ContentView()
         }
     }
 }

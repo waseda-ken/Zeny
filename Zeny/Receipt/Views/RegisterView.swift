@@ -1,52 +1,54 @@
-// RegisterView.swift
+// UI/RegisterView.swift
 import SwiftUI
 
-/// レシート登録用フォーム
 struct RegisterView: View {
-    @State private var storeName = ""
-    @State private var purchaseDate = Date()
-    @State private var totalAmountText = ""
-    var onSave: ((PurchaseRecord) -> Void)?
+    @State private var storeName: String
+    @State private var purchaseDate: Date
+    @State private var totalAmountText: String
 
-    var body: some View {
-        NavigationView {
-            Form {
-                Section("店舗名") {
-                    TextField("例: コンビニA", text: $storeName)
-                }
-                Section("購入日") {
-                    DatePicker("日付を選択", selection: $purchaseDate, displayedComponents: .date)
-                }
-                Section("合計金額") {
-                    TextField("例: 1200", text: $totalAmountText)
-                        .keyboardType(.numberPad)
-                }
-            }
-            .navigationTitle("レシート登録")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") { saveRecord() }
-                        .disabled(!isInputValid())
-                }
-            }
-        }
+    let onSave: (PurchaseRecord) -> Void
+
+    init(record: PurchaseRecord, onSave: @escaping (PurchaseRecord) -> Void) {
+        _storeName       = State(initialValue: record.storeName)
+        _purchaseDate    = State(initialValue: record.purchaseDate)
+        _totalAmountText = State(initialValue: String(format: "%.2f", record.totalAmount))
+        self.onSave      = onSave
     }
 
-    private func isInputValid() -> Bool {
-        !storeName.isEmpty && Double(totalAmountText) != nil
+    var body: some View {
+        Form {
+            Section("店舗名") {
+                TextField("例: コンビニA", text: $storeName)
+            }
+            Section("日付") {
+                DatePicker("", selection: $purchaseDate, displayedComponents: .date)
+            }
+            Section("合計金額") {
+                TextField("¥0", text: $totalAmountText)
+                    .keyboardType(.decimalPad)
+            }
+            Section {
+                Button("保存する") { saveRecord() }
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .navigationTitle("レシート登録")
     }
 
     private func saveRecord() {
         guard let amt = Double(totalAmountText) else { return }
-        let record = PurchaseRecord(storeName: storeName,
-                                    purchaseDate: purchaseDate,
-                                    totalAmount: amt)
-        onSave?(record)
+        let record = PurchaseRecord(
+            storeName: storeName,
+            purchaseDate: purchaseDate,
+            totalAmount: amt
+        )
+        onSave(record)
     }
 }
 
 struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView(onSave: { rec in print(rec) })
+        let dummy = PurchaseRecord(storeName: "サンプル店", purchaseDate: Date(), totalAmount: 1234.56)
+        RegisterView(record: dummy) { _ in }
     }
 }

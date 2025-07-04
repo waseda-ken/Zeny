@@ -9,7 +9,36 @@
 import SwiftUI
 
 enum TabItem: String, CaseIterable {
-    case calendar, graph, scan, manual
-    var iconName: String { /* … */ }
-    var title: String    { /* … */ }
+    case calendar
+    case graph
+    case scan
+    case manual
+
+    // アイコン名
+    var iconName: String {
+        switch self {
+        case .calendar:
+            return "calendar"
+        case .graph:
+            return "chart.pie"
+        case .scan:
+            return "camera.viewfinder"
+        case .manual:
+            return "square.and.pencil"
+        }
+    }
+
+    // タイトル文字列
+    var title: String {
+        switch self {
+        case .calendar:
+            return "カレンダー"
+        case .graph:
+            return "グラフ"
+        case .scan:
+            return "スキャン"
+        case .manual:
+            return "手入力"
+        }
+    }
 }
