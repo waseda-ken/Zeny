@@ -1,8 +1,12 @@
-//
-//  BlurView.swift
-//  Zeny
-//
-//  Created by 永田健人 on 2025/07/16.
-//
+import SwiftUI
+import UIKit
 
-import Foundation
+struct BlurView: UIViewRepresentable {
+    let style: UIBlurEffect.Style
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        UIVisualEffectView(effect: UIBlurEffect(style: style))
+    }
+    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
+}
+
+
