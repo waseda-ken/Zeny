@@ -1,233 +1,171 @@
+//
+// ReceiptScannerViewController.swift
+// Zeny
+//
+// Created by 永田健人 on 2025/07/XX.
+//
+
 import UIKit
+import AVFoundation
 import Vision
-import VisionKit
-import PhotosUI
 
-/// レシートスキャン＆OCR＋読み取り範囲指定付きビューコントローラ
-final class ReceiptScannerViewController: UIViewController,
-    VNDocumentCameraViewControllerDelegate,
-    PHPickerViewControllerDelegate {
+final class ReceiptScannerViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+    // MARK: - UI & AVSession
+    private let captureSession = AVCaptureSession()
+    private var previewLayer: AVCaptureVideoPreviewLayer!
+    private var resultTextView: UITextView!
 
-    /// タップした場所種別
-    enum TapRegion { case topLeft, topRight, bottomLeft, bottomRight, center }
-
-    // MARK: - UI Elements
-    private var receiptImageView = UIImageView()
-    private var regionView = UIView()
-    private var scanButton = UIButton(type: .system)
-    private var recognizeButton = UIButton(type: .system)
-    private var resultTextView = UITextView()
-
-    // MARK: - State
-    private var tappedRegion: TapRegion? = nil
-    /// OCR結果を渡すコールバック
+    /// OCR完了時に呼び出すコールバック
     var onRecognized: ((String) -> Void)?
-    private var hasPromptedImageSource = false
 
-    // MARK: - Constants
-    private let regionDefaultSize = CGSize(width: 200, height: 200)
-    private let regionCenterSize = CGSize(width: 40, height: 40)
-    private let regionMinSize = CGSize(width: 60, height: 60)
+    // MARK: - Life Cycle
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "レシートOCR"
-        view.backgroundColor = .systemBackground
-        setupImageView()
-        setupRegionView()
-        setupButtons()
-        setupResultView()
+        view.backgroundColor = .black
+        setupPreviewLayer()
+        setupResultTextView()
+        configureSession()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if !hasPromptedImageSource {
-            hasPromptedImageSource = true
-            promptImageSource()
-        }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        previewLayer.frame = view.bounds
+        let height: CGFloat = 150
+        resultTextView.frame = CGRect(
+            x: 0,
+            y: view.bounds.height - height,
+            width: view.bounds.width,
+            height: height
+        )
     }
 
     // MARK: - Setup
-    private func setupImageView() {
-        receiptImageView.contentMode = .scaleAspectFit
-        receiptImageView.translatesAutoresizingMaskIntoConstraints = false
-        receiptImageView.isUserInteractionEnabled = true
-        view.addSubview(receiptImageView)
-        NSLayoutConstraint.activate([
-            receiptImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            receiptImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            receiptImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            receiptImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4)
-        ])
+
+    private func setupPreviewLayer() {
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(previewLayer)
     }
 
-    private func setupRegionView() {
-        regionView.frame = CGRect(origin: .zero, size: regionDefaultSize)
-        regionView.center = view.center
-        regionView.backgroundColor = .clear
-        regionView.layer.borderColor = UIColor.red.cgColor
-        regionView.layer.borderWidth = 2
-        regionView.isUserInteractionEnabled = true
-        view.addSubview(regionView)
-    }
-
-    private func setupButtons() {
-        scanButton.setTitle("スキャン/フォト選択", for: .normal)
-        scanButton.translatesAutoresizingMaskIntoConstraints = false
-        scanButton.addTarget(self, action: #selector(promptImageSource), for: .touchUpInside)
-        view.addSubview(scanButton)
-
-        recognizeButton.setTitle("OCR実行", for: .normal)
-        recognizeButton.translatesAutoresizingMaskIntoConstraints = false
-        recognizeButton.addTarget(self, action: #selector(cropAndRecognize), for: .touchUpInside)
-        view.addSubview(recognizeButton)
-
-        NSLayoutConstraint.activate([
-            scanButton.topAnchor.constraint(equalTo: receiptImageView.bottomAnchor, constant: 12),
-            scanButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            recognizeButton.topAnchor.constraint(equalTo: receiptImageView.bottomAnchor, constant: 12),
-            recognizeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
-    }
-
-    private func setupResultView() {
+    private func setupResultTextView() {
+        resultTextView = UITextView()
+        resultTextView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        resultTextView.textColor = .white
         resultTextView.isEditable = false
-        resultTextView.font = .systemFont(ofSize: 16)
-        resultTextView.translatesAutoresizingMaskIntoConstraints = false
+        resultTextView.isSelectable = false
         view.addSubview(resultTextView)
-        NSLayoutConstraint.activate([
-            resultTextView.topAnchor.constraint(equalTo: scanButton.bottomAnchor, constant: 12),
-            resultTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            resultTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            resultTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
-        ])
     }
 
-    // MARK: - Image Source
-    @objc private func promptImageSource() {
-        let ac = UIAlertController(title: "レシート画像取得", message: nil, preferredStyle: .actionSheet)
-        ac.addAction(UIAlertAction(title: "カメラでスキャン", style: .default) { _ in self.startCameraScan() })
-        ac.addAction(UIAlertAction(title: "フォトライブラリ", style: .default) { _ in self.startPhotoPicker() })
-        ac.addAction(UIAlertAction(title: "キャンセル", style: .cancel))
-        present(ac, animated: true)
-    }
+    private func configureSession() {
+        captureSession.beginConfiguration()
 
-    private func startCameraScan() {
-        guard VNDocumentCameraViewController.isSupported else { return }
-        let cam = VNDocumentCameraViewController()
-        cam.delegate = self
-        present(cam, animated: true)
-    }
-
-    private func startPhotoPicker() {
-        var cfg = PHPickerConfiguration()
-        cfg.filter = .images
-        cfg.selectionLimit = 1
-        let picker = PHPickerViewController(configuration: cfg)
-        picker.delegate = self
-        present(picker, animated: true)
-    }
-
-    // MARK: - Delegates
-    func documentCameraViewController(_ controller: VNDocumentCameraViewController,
-                                      didFinishWith scan: VNDocumentCameraScan) {
-        controller.dismiss(animated: true)
-        receiptImageView.image = scan.imageOfPage(at: 0)
-        regionView.center = view.center
-    }
-    func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
-        controller.dismiss(animated: true)
-    }
-
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true)
-        guard let item = results.first?.itemProvider,
-              item.canLoadObject(ofClass: UIImage.self) else { return }
-        item.loadObject(ofClass: UIImage.self) { img, _ in
-            DispatchQueue.main.async {
-                self.receiptImageView.image = img as? UIImage
-                self.regionView.center = self.view.center
-            }
+        // カメラ入力
+        guard
+            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+            let input = try? AVCaptureDeviceInput(device: device),
+            captureSession.canAddInput(input)
+        else {
+            captureSession.commitConfiguration()
+            return
         }
-    }
+        captureSession.addInput(input)
 
-    // MARK: - Touch Handlers for Region Resize/Move
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let p = touches.first?.location(in: view), regionView.frame.contains(p) else { tappedRegion = nil; return }
-        let lp = view.convert(p, to: regionView)
-        let c = CGPoint(x: regionView.bounds.midX, y: regionView.bounds.midY)
-        let centerRect = CGRect(x: c.x-regionCenterSize.width/2,
-                                 y: c.y-regionCenterSize.height/2,
-                                 width: regionCenterSize.width,
-                                 height: regionCenterSize.height)
-        if centerRect.contains(lp) { tappedRegion = .center }
-        else if lp.x < c.x { tappedRegion = lp.y < c.y ? .topLeft : .bottomLeft }
-        else { tappedRegion = lp.y < c.y ? .topRight : .bottomRight }
-    }
-
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let p = touches.first?.location(in: view), let r = tappedRegion else { return }
-        var f = regionView.frame
-        switch r {
-        case .topLeft:
-            let dx = f.origin.x - p.x, dy = f.origin.y - p.y
-            f.origin.x = p.x; f.origin.y = p.y; f.size.width += dx; f.size.height += dy
-        case .topRight:
-            let dy = f.origin.y - p.y
-            f.origin.y = p.y; f.size.width = p.x - f.origin.x; f.size.height += dy
-        case .bottomLeft:
-            let dx = f.origin.x - p.x
-            f.origin.x = p.x; f.size.width += dx; f.size.height = p.y - f.origin.y
-        case .bottomRight:
-            f.size.width = p.x - f.origin.x; f.size.height = p.y - f.origin.y
-        case .center:
-            regionView.center = p; return
+        // ビデオ出力
+        let dataOutput = AVCaptureVideoDataOutput()
+        dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
+        guard captureSession.canAddOutput(dataOutput) else {
+            captureSession.commitConfiguration()
+            return
         }
-        f.size.width = max(f.size.width, regionMinSize.width)
-        f.size.height = max(f.size.height, regionMinSize.height)
-        regionView.frame = f
+        captureSession.addOutput(dataOutput)
+        captureSession.commitConfiguration()
+        captureSession.startRunning()
     }
 
-    // MARK: - OCR Execution
-    @objc private func cropAndRecognize() {
-        guard let img = receiptImageView.image else { return }
-        let cropRect = convertRect(regionView.frame, from: receiptImageView, to: img)
-        guard let cg = img.cgImage?.cropping(to: cropRect) else { return }
-        performOCR(on: UIImage(cgImage: cg))
+    // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+
+    func captureOutput(
+        _ output: AVCaptureOutput,
+        didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection
+    ) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return }
+        performOCR(on: UIImage(cgImage: cgImage))
     }
+
+    // MARK: - OCR ＋ レシート領域検出
 
     private func performOCR(on image: UIImage) {
-        resultTextView.text = "認識中…"
         guard let cg = image.cgImage else { return }
-        let req = VNRecognizeTextRequest { [weak self] req, err in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                if let e = err {
-                    self.resultTextView.text = "認識エラー: \(e.localizedDescription)"
+
+        // 1. レシート領域（矩形）を検出
+        let rectReq = VNDetectRectanglesRequest { [weak self] req, _ in
+            guard let self = self else { return }
+            DispatchQueue.global(qos: .userInitiated).async {
+                let cgImageToUse: CGImage
+
+                if let obs = (req.results as? [VNRectangleObservation])?.first {
+                    // 2. CIImage に変換し遠近補正
+                    let ci = CIImage(cgImage: cg)
+                    let corners: [String: CIVector] = [
+                        "inputTopLeft":     CIVector(x: obs.topLeft.x * ci.extent.width,
+                                                     y: obs.topLeft.y * ci.extent.height),
+                        "inputTopRight":    CIVector(x: obs.topRight.x * ci.extent.width,
+                                                     y: obs.topRight.y * ci.extent.height),
+                        "inputBottomLeft":  CIVector(x: obs.bottomLeft.x * ci.extent.width,
+                                                     y: obs.bottomLeft.y * ci.extent.height),
+                        "inputBottomRight": CIVector(x: obs.bottomRight.x * ci.extent.width,
+                                                     y: obs.bottomRight.y * ci.extent.height)
+                    ]
+                    let corrected = ci.applyingFilter(
+                        "CIPerspectiveCorrection",
+                        parameters: corners
+                    )
+                    let ciContext = CIContext()
+                    cgImageToUse = ciContext.createCGImage(corrected, from: corrected.extent) ?? cg
                 } else {
-                    let lines = (req.results as? [VNRecognizedTextObservation])?.compactMap { $0.topCandidates(1).first?.string } ?? []
-                    let text = lines.joined(separator: "\n")
-                    self.resultTextView.text = text
-                    // 完了したらクロージャで渡す
-                    self.onRecognized?(text)
+                    // 検出失敗時はオリジナルを使用
+                    cgImageToUse = cg
                 }
+
+                // 3. 切り出した画像でOCR実行
+                let ocrReq = VNRecognizeTextRequest { [weak self] ocrReq, err in
+                    DispatchQueue.main.async {
+                        guard let self = self else { return }
+                        if let e = err {
+                            self.resultTextView.text = "OCRエラー: \(e.localizedDescription)"
+                        } else {
+                            let lines = (ocrReq.results as? [VNRecognizedTextObservation])?
+                                .compactMap { $0.topCandidates(1).first?.string }
+                                ?? []
+                            let text = lines.joined(separator: "\n")
+                            self.resultTextView.text = text
+                            self.onRecognized?(text)
+                        }
+                    }
+                }
+                ocrReq.recognitionLevel = .accurate
+                ocrReq.usesLanguageCorrection = false
+                ocrReq.recognitionLanguages = ["ja-JP", "en-US"]
+
+                let handler2 = VNImageRequestHandler(
+                    cgImage: cgImageToUse,
+                    options: [:]
+                )
+                try? handler2.perform([ocrReq])
             }
         }
-        req.recognitionLevel = .accurate
-        req.recognitionLanguages = ["ja-JP"]
-        try? VNImageRequestHandler(cgImage: cg, options: [:]).perform([req])
-    }
 
-    // MARK: - Helper
-    private func convertRect(_ rect: CGRect, from iv: UIImageView, to image: UIImage) -> CGRect {
-        let ivs = iv.bounds.size, imgs = image.size
-        let scale = min(ivs.width/imgs.width, ivs.height/imgs.height)
-        let draw = CGSize(width: imgs.width*scale, height: imgs.height*scale)
-        let xOff = (ivs.width - draw.width)/2, yOff = (ivs.height - draw.height)/2
-        var r = rect
-        r.origin.x = (r.origin.x - xOff)/scale; r.origin.y = (r.origin.y - yOff)/scale
-        r.size.width /= scale; r.size.height /= scale
-        return r
+        // 矩形検出のパラメータ調整
+        rectReq.maximumObservations = 1
+        rectReq.minimumConfidence   = 0.8
+        rectReq.minimumAspectRatio  = 0.3
+
+        let handler = VNImageRequestHandler(cgImage: cg, options: [:])
+        try? handler.perform([rectReq])
     }
 }
