@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ReceiptScannerViewControllerWrapper: UIViewControllerRepresentable {
-    @Binding var recognizedText: String 
+    @Binding var recognizedText: String
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -9,18 +9,22 @@ struct ReceiptScannerViewControllerWrapper: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> ReceiptScannerViewController {
         let vc = ReceiptScannerViewController()
-        // VC 側のクロージャに SwiftUI の binding を渡す
+        // OCR 結果を Binding に流し込む
         vc.onRecognized = { text in
-            DispatchQueue.main.async {
-                context.coordinator.parent.recognizedText = text
-            }
+            context.coordinator.parent.recognizedText = text
         }
         return vc
     }
-    func updateUIViewController(_ uiViewController: ReceiptScannerViewController, context: Context) {}
 
-    class Coordinator: NSObject {
-        var parent: ReceiptScannerViewControllerWrapper
-        init(_ parent: ReceiptScannerViewControllerWrapper) { self.parent = parent }
+    func updateUIViewController(_ uiViewController: ReceiptScannerViewController,
+                                context: Context) {
+        // no-op
+    }
+
+    class Coordinator {
+        let parent: ReceiptScannerViewControllerWrapper
+        init(_ parent: ReceiptScannerViewControllerWrapper) {
+            self.parent = parent
+        }
     }
 }
