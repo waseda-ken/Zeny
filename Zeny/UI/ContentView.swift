@@ -1,38 +1,54 @@
-//
-//  ContentView.swift
-//  Zeny
-//
-//  Created by 永田健人 on 2025/07/02.
-//
-
+// UI/ContentView.swift
 import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab: TabItem = .calendar
 
     var body: some View {
-        ZStack {
-            // タブに応じた画面切り替え
-            Group {
-                switch selectedTab {
-                case .calendar: CalendarView()
-                case .graph:    GraphView()
-                case .scan:     ScanView()
-                case .manual:   ManualInputView()
-                }
+        TabView(selection: $selectedTab) {
+            // ───────── カレンダータブ ─────────
+            NavigationStack {
+                CalendarView()
             }
-            .edgesIgnoringSafeArea(.all)
+            .tabItem {
+                Image(systemName: TabItem.calendar.iconName)
+                Text(TabItem.calendar.title)
+            }
+            .tag(TabItem.calendar)
 
-            // カスタムタブバーを画面下部に重ねる
-            VStack {
-                Spacer()
-                CustomTabBar(selectedTab: $selectedTab)
+            // ───────── グラフタブ ─────────
+            NavigationStack {
+                GraphView()
             }
+            .tabItem {
+                Image(systemName: TabItem.graph.iconName)
+                Text(TabItem.graph.title)
+            }
+            .tag(TabItem.graph)
+
+            // ───────── スキャンタブ ─────────
+            NavigationStack {
+                ScanView()
+            }
+            .tabItem {
+                Image(systemName: TabItem.scan.iconName)
+                Text(TabItem.scan.title)
+            }
+            .tag(TabItem.scan)
+
+            // ───────── 手入力タブ ─────────
+            NavigationStack {
+                ManualInputView(onSave: { record in print("保存されたレコード:", record)})
+            }
+            .tabItem {
+                Image(systemName: TabItem.manual.iconName)
+                Text(TabItem.manual.title)
+            }
+            .tag(TabItem.manual)
         }
     }
 }
 
-// プレビュー用
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
