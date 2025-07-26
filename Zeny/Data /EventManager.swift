@@ -67,9 +67,9 @@ class EventManager: ObservableObject {
             self.events = [
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 2))!, amount: 1500, category: "食費", storeName: "とんかつ太郎"),
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 2))!, amount: 300, category: "娯楽費", storeName: "スターカフェ"),
-                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 2))!, amount: 500, category: "日用費", storeName: "コーヒー豆専門店"),
-                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 5, day: 2))!, amount: 100, category: "交通費", storeName: "コンビニエンスストア"),
-                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 3, day: 2))!, amount: 2500, category: "食費", storeName: "寿司屋大将"),
+                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 2))!, amount: 500, category: "日用費", storeName: "コーヒー豆専門店"),
+                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 2))!, amount: 100, category: "交通費", storeName: "コンビニエンスストア"),
+                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 2))!, amount: 2500, category: "食費", storeName: "寿司屋大将"),
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 10))!, amount: 100000, category: "収入", storeName: "給与"),
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 15))!, amount: 50000, category: "固定費", storeName: "家賃"),
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 8))!, amount: 3000, category: "医療費", storeName: "〇〇病院"),
