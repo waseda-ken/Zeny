@@ -15,34 +15,49 @@ struct ScanView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                // 背景グラデーション
                 LinearGradient(
                     gradient: Gradient(colors: [Color("GradientTop"), Color("GradientBottom")]),
-                    startPoint: .top, endPoint: .bottom
+                    startPoint: .top,
+                    endPoint: .bottom
                 )
                 .ignoresSafeArea()
 
-                VStack(spacing: 40) {
+                VStack(spacing: 24) {
+                    Spacer()
+
                     Text("レシートをスキャン")
                         .font(.title2).bold()
                         .foregroundStyle(.white)
 
-                    Button { showSourceAction = true } label: {
+                    Button {
+                        showSourceAction = true
+                    } label: {
                         Image(systemName: "camera.viewfinder")
                             .font(.system(size: 48))
+                            .foregroundColor(.white)
                             .padding(36)
-                            .background(.thinMaterial, in: Circle())
-                            .overlay(Circle().stroke(Color.white.opacity(0.3), lineWidth: 2))
-                            .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 6)
-                            .scaleEffect(showSourceAction ? 1.05 : 1.0)
-                            .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true),
-                                       value: showSourceAction)
+                            .background(
+                                Circle()
+                                    .fill(Color("AccentGold").opacity(0.7))
+                            )
+                            .overlay(
+                                Circle().fill(.thinMaterial).opacity(0.3)
+                            )
+                            .overlay(
+                                Circle().stroke(Color("AccentGold"), lineWidth: 1)
+                            )
+                            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
                     }
 
-                    Text("または\nフォトライブラリから選択")
+                    Text("ボタンをタップして\nレシートを撮影または選択")
+                        .font(.headline)
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(.white.opacity(0.8))
+                        .foregroundColor(.white.opacity(0.9))
+
+                    Spacer()
                 }
-                .padding()
+                .padding(.horizontal, 40)
             }
             .actionSheet(isPresented: $showSourceAction) {
                 ActionSheet(title: Text("画像ソースを選択"), buttons: [
@@ -94,7 +109,8 @@ struct ScanView: View {
         parsedRecord = PurchaseRecord(
             storeName:    storeName,
             purchaseDate: date,
-            totalAmount:  amount
+            totalAmount:  amount,
+            category: "食費"
         )
         showCameraSheet = false
         showPhotoSheet  = false
@@ -107,10 +123,13 @@ struct ScanView: View {
         let pattern = "(?<=¥|￥)\\s*([\\d,]+(?:\\.\\d+)?)"
         guard let regex = try? NSRegularExpression(pattern: pattern) else { return 0 }
         var values: [Double] = []
-        regex.enumerateMatches(in: text, range: NSRange(location: 0, length: ns.length)) { m, _, _ in
+        let full = NSRange(location: 0, length: ns.length)
+        regex.enumerateMatches(in: text, options: [], range: full) { m, _, _ in
             guard let m = m, m.numberOfRanges >= 2 else { return }
             let raw = ns.substring(with: m.range(at: 1)).replacingOccurrences(of: ",", with: "")
-            if let num = Double(raw) { values.append(num) }
+            if let num = Double(raw) {
+                values.append(num)
+            }
         }
         return values.max() ?? 0
     }
@@ -119,11 +138,9 @@ struct ScanView: View {
     private func parseStoreName(from text: String) -> String {
         for line in text.components(separatedBy: .newlines) {
             let t = line.trimmingCharacters(in: .whitespaces)
-            guard !t.isEmpty,
-                  t.rangeOfCharacter(from: .decimalDigits) == nil,
-                  !t.contains("TEL"),
-                  !t.contains("〒")
-            else { continue }
+            if t.isEmpty { continue }
+            if t.rangeOfCharacter(from: .decimalDigits) != nil { continue }
+            if t.contains("TEL") || t.contains("〒") { continue }
             return t
         }
         return ""
@@ -132,13 +149,13 @@ struct ScanView: View {
     // MARK: - 日付解析
     private func parseDate(from text: String) -> Date? {
         let lines = text.components(separatedBy: .newlines)
-        let dateFormats: [(pattern: String, format: String)] = [
+        let formats: [(pattern: String, format: String)] = [
             ("(20\\d{2})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{1,2})", "yyyy/M/d"),
             ("(\\d{1,2})[\\/\\-.](\\d{1,2})[\\/\\-.](\\d{2})",       "M/d/yy"),
             ("(20\\d{2})年(\\d{1,2})月(\\d{1,2})日",                  "yyyy年M月d日")
         ]
         for line in lines.reversed() {
-            for (pat, fmt) in dateFormats {
+            for (pat, fmt) in formats {
                 if let d = matchDate(in: line, pattern: pat, format: fmt) {
                     return d
                 }
