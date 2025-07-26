@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C432F01EF43F35045AEDC9A /* Pods_ZenyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 007F98057B937938194C18C5 /* Pods_ZenyTests.framework */; };
+		1055673023E480F5672B1FA8 /* Pods_Zeny.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A2F513B3EC709533169DA9 /* Pods_Zeny.framework */; };
+		24AA03262DF93CA8006DAEC2 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 24AA03252DF93CA8006DAEC2 /* FSCalendar */; };
 		24E386642DDD900000B12309 /* .gitignore in Sources */ = {isa = PBXBuildFile; fileRef = 24E386632DDD8FF600B12309 /* .gitignore */; };
+		9D5D789CABA86F365E0DC736 /* Pods_Zeny_ZenyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8202DBDCE571AD4592661D /* Pods_Zeny_ZenyUITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,10 +32,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		007F98057B937938194C18C5 /* Pods_ZenyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZenyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		03697AA16131615B1A6AA865 /* Pods-Zeny-ZenyUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Zeny-ZenyUITests.debug.xcconfig"; path = "Target Support Files/Pods-Zeny-ZenyUITests/Pods-Zeny-ZenyUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		0AE6128AAC1DC24F3DA996E4 /* Pods-ZenyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZenyTests.debug.xcconfig"; path = "Target Support Files/Pods-ZenyTests/Pods-ZenyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2187E4D72DD45CB400825483 /* Zeny.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zeny.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2187E4E42DD45CB600825483 /* ZenyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZenyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2187E4EE2DD45CB600825483 /* ZenyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZenyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		24E386632DDD8FF600B12309 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		261D5CBA0AA5FF3E3065D6F4 /* Pods-ZenyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZenyTests.release.xcconfig"; path = "Target Support Files/Pods-ZenyTests/Pods-ZenyTests.release.xcconfig"; sourceTree = "<group>"; };
+		5E64D48938B39BF4D54A85DD /* Pods-Zeny-ZenyUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Zeny-ZenyUITests.release.xcconfig"; path = "Target Support Files/Pods-Zeny-ZenyUITests/Pods-Zeny-ZenyUITests.release.xcconfig"; sourceTree = "<group>"; };
+		6235A5E349DE533FC07D356E /* Pods-Zeny.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Zeny.release.xcconfig"; path = "Target Support Files/Pods-Zeny/Pods-Zeny.release.xcconfig"; sourceTree = "<group>"; };
+		8826FEBA90B83CF0BCF4D77F /* Pods-Zeny.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Zeny.debug.xcconfig"; path = "Target Support Files/Pods-Zeny/Pods-Zeny.debug.xcconfig"; sourceTree = "<group>"; };
+		C4A2F513B3EC709533169DA9 /* Pods_Zeny.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Zeny.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE8202DBDCE571AD4592661D /* Pods_Zeny_ZenyUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Zeny_ZenyUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -57,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24AA03262DF93CA8006DAEC2 /* FSCalendar in Frameworks */,
+				1055673023E480F5672B1FA8 /* Pods_Zeny.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C432F01EF43F35045AEDC9A /* Pods_ZenyTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D5D789CABA86F365E0DC736 /* Pods_Zeny_ZenyUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +102,8 @@
 				2187E4E72DD45CB600825483 /* ZenyTests */,
 				2187E4F12DD45CB600825483 /* ZenyUITests */,
 				2187E4D82DD45CB400825483 /* Products */,
+				8611DA6B4066B0BBAF4895A8 /* Pods */,
+				C136BF55D253C3009C050FD9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -98,6 +117,29 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8611DA6B4066B0BBAF4895A8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8826FEBA90B83CF0BCF4D77F /* Pods-Zeny.debug.xcconfig */,
+				6235A5E349DE533FC07D356E /* Pods-Zeny.release.xcconfig */,
+				03697AA16131615B1A6AA865 /* Pods-Zeny-ZenyUITests.debug.xcconfig */,
+				5E64D48938B39BF4D54A85DD /* Pods-Zeny-ZenyUITests.release.xcconfig */,
+				0AE6128AAC1DC24F3DA996E4 /* Pods-ZenyTests.debug.xcconfig */,
+				261D5CBA0AA5FF3E3065D6F4 /* Pods-ZenyTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		C136BF55D253C3009C050FD9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C4A2F513B3EC709533169DA9 /* Pods_Zeny.framework */,
+				FE8202DBDCE571AD4592661D /* Pods_Zeny_ZenyUITests.framework */,
+				007F98057B937938194C18C5 /* Pods_ZenyTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -105,9 +147,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2187E4F82DD45CB600825483 /* Build configuration list for PBXNativeTarget "Zeny" */;
 			buildPhases = (
+				920E81724C331955DDDBA24D /* [CP] Check Pods Manifest.lock */,
 				2187E4D32DD45CB400825483 /* Sources */,
 				2187E4D42DD45CB400825483 /* Frameworks */,
 				2187E4D52DD45CB400825483 /* Resources */,
+				E20D16E05F63239527556FDA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -117,8 +161,6 @@
 				2187E4D92DD45CB400825483 /* Zeny */,
 			);
 			name = Zeny;
-			packageProductDependencies = (
-			);
 			productName = Zeny;
 			productReference = 2187E4D72DD45CB400825483 /* Zeny.app */;
 			productType = "com.apple.product-type.application";
@@ -127,6 +169,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2187E4FB2DD45CB600825483 /* Build configuration list for PBXNativeTarget "ZenyTests" */;
 			buildPhases = (
+				E94946DA6902030D9C1524A4 /* [CP] Check Pods Manifest.lock */,
 				2187E4E02DD45CB600825483 /* Sources */,
 				2187E4E12DD45CB600825483 /* Frameworks */,
 				2187E4E22DD45CB600825483 /* Resources */,
@@ -140,8 +183,6 @@
 				2187E4E72DD45CB600825483 /* ZenyTests */,
 			);
 			name = ZenyTests;
-			packageProductDependencies = (
-			);
 			productName = ZenyTests;
 			productReference = 2187E4E42DD45CB600825483 /* ZenyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -150,9 +191,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2187E4FE2DD45CB600825483 /* Build configuration list for PBXNativeTarget "ZenyUITests" */;
 			buildPhases = (
+				D3D5522C85158FD8C464DF46 /* [CP] Check Pods Manifest.lock */,
 				2187E4EA2DD45CB600825483 /* Sources */,
 				2187E4EB2DD45CB600825483 /* Frameworks */,
 				2187E4EC2DD45CB600825483 /* Resources */,
+				1AB32C0F4FEEC7214A465046 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -163,8 +206,6 @@
 				2187E4F12DD45CB600825483 /* ZenyUITests */,
 			);
 			name = ZenyUITests;
-			packageProductDependencies = (
-			);
 			productName = ZenyUITests;
 			productReference = 2187E4EE2DD45CB600825483 /* ZenyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -201,6 +242,9 @@
 			);
 			mainGroup = 2187E4CE2DD45CB400825483;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				24AA03242DF93CA8006DAEC2 /* XCRemoteSwiftPackageReference "FSCalendar" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2187E4D82DD45CB400825483 /* Products */;
 			projectDirPath = "";
@@ -236,6 +280,117 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1AB32C0F4FEEC7214A465046 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Zeny-ZenyUITests/Pods-Zeny-ZenyUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Zeny-ZenyUITests/Pods-Zeny-ZenyUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Zeny-ZenyUITests/Pods-Zeny-ZenyUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		920E81724C331955DDDBA24D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Zeny-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D3D5522C85158FD8C464DF46 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Zeny-ZenyUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E20D16E05F63239527556FDA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Zeny/Pods-Zeny-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Zeny/Pods-Zeny-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Zeny/Pods-Zeny-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E94946DA6902030D9C1524A4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ZenyTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2187E4D32DD45CB400825483 /* Sources */ = {
@@ -397,18 +552,21 @@
 		};
 		2187E4F92DD45CB600825483 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8826FEBA90B83CF0BCF4D77F /* Pods-Zeny.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -424,18 +582,21 @@
 		};
 		2187E4FA2DD45CB600825483 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6235A5E349DE533FC07D356E /* Pods-Zeny.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -451,10 +612,12 @@
 		};
 		2187E4FC2DD45CB600825483 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0AE6128AAC1DC24F3DA996E4 /* Pods-ZenyTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
 				MARKETING_VERSION = 1.0;
@@ -469,10 +632,12 @@
 		};
 		2187E4FD2DD45CB600825483 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 261D5CBA0AA5FF3E3065D6F4 /* Pods-ZenyTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
 				MARKETING_VERSION = 1.0;
@@ -487,9 +652,11 @@
 		};
 		2187E4FF2DD45CB600825483 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 03697AA16131615B1A6AA865 /* Pods-Zeny-ZenyUITests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ZenyUITests;
@@ -503,9 +670,11 @@
 		};
 		2187E5002DD45CB600825483 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5E64D48938B39BF4D54A85DD /* Pods-Zeny-ZenyUITests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ZenyUITests;
@@ -557,6 +726,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		24AA03242DF93CA8006DAEC2 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		24AA03252DF93CA8006DAEC2 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 24AA03242DF93CA8006DAEC2 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2187E4CF2DD45CB400825483 /* Project object */;
 }

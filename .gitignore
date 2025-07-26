@@ -4,7 +4,18 @@ xcuserdata/
 DerivedData/
 *.Xcuserstate
 *.xcoworkspace/xcuserdata
+*.playground/
+build/
 
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
             
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Other
+.swiftpm/
+.build/
+.xcodeproj/project.xcworkspace/
+.xcodeproj/xcuserdata/
