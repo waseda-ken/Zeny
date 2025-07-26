@@ -9,7 +9,7 @@ import SwiftUI
 import FSCalendar
 import UIKit
  
-struct CalendarView: UIViewRepresentable {
+struct CalendarControlView: UIViewRepresentable {
     @Binding var selectedDate: Date
     // ContentViewからすべてのイベントを受け取るためのBinding
     @Binding var allEvents: [Event]
@@ -81,7 +81,7 @@ struct CalendarView: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance {
-        var parent:CalendarView
+        var parent:CalendarControlView
         
         // 日付フォーマット（イベントデータ用）
         let dateFormatter: DateFormatter = {
@@ -92,7 +92,7 @@ struct CalendarView: UIViewRepresentable {
             return formatter
         }()
         
-        init(_ parent:CalendarView){
+        init(_ parent:CalendarControlView){
             self.parent = parent
         }
         // カスタムセルを返すデリゲートメソッド
@@ -153,7 +153,7 @@ struct CalendarView: UIViewRepresentable {
 #Preview{
     VStack(spacing: 0) { // スペーシングを0にして要素間の余白をなくす
         // ★PreviewでもallEventsのBindingを渡す必要があります
-        CalendarView(selectedDate: .constant(Date()), allEvents: .constant([
+        CalendarControlView(selectedDate: .constant(Date()), allEvents: .constant([
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 22))!, amount: 2500, category: "食費", storeName: "お寿司")
             ]))
                 // 高さをより多く確保するか、必要に応じてnilにして自動計算させる

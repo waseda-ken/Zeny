@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CalendarControlView: View {
+struct CalendarScreenView: View {
     @State private var selectedDate = Date() // カレンダーで選択された日付
     
     // イベントデータを管理するEventManagerのインスタンス
@@ -24,7 +24,7 @@ struct CalendarControlView: View {
     var body: some View {
         //NavigationView{
             VStack(spacing: 0) { // スペーシングを0にして要素間の余白をなくす
-                CalendarView(selectedDate: $selectedDate, allEvents: $eventManager.events)
+                CalendarControlView(selectedDate: $selectedDate, allEvents: $eventManager.events)
                 // 高さをより多く確保するか、必要に応じてnilにして自動計算させる
                     .frame(height: 600) // 例: より高い固定値を指定
                     .aspectRatio(1.0, contentMode: .fit) // 幅に合わせて高さを調整 (正方形比率)
@@ -44,5 +44,5 @@ struct CalendarControlView: View {
 }
 
 #Preview {
-    CalendarControlView()
+    CalendarScreenView()
 }
