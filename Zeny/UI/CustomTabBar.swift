@@ -1,10 +1,4 @@
-//
-//  CustomTabBar.swift
-//  Zeny
-//
-//  Created by 永田健人 on 2025/07/02.
-//
-
+// UI/CustomTabBar.swift
 import SwiftUI
 
 struct CustomTabBar: View {
@@ -13,29 +7,41 @@ struct CustomTabBar: View {
     var body: some View {
         HStack {
             ForEach(TabItem.allCases, id: \.self) { item in
-                Button {
-                    selectedTab = item
-                } label: {
+                Button(action: { selectedTab = item }) {
                     VStack(spacing: 4) {
-                        Image(systemName: item.iconName)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 24, height: 24)
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color("AccentGold").opacity(selectedTab == item ? 1 : 0.3),
+                                            Color("AccentGold").opacity(0)
+                                        ]),
+                                        startPoint: .top, endPoint: .bottom
+                                    )
+                                )
+                                .frame(width: 36, height: 36)
+                                .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
+
+                            Image(systemName: item.iconName)
+                                .font(.title3)
+                                .foregroundColor(selectedTab == item ? .white : .gray)
+                        }
                         Text(item.title)
-                            .font(.caption)
+                            .font(.caption2)
+                            .foregroundColor(selectedTab == item ? Color("AccentGold") : .gray)
                     }
-                    .foregroundColor(selectedTab == item ? .accentColor : .gray)
+                    .padding(.vertical, 6)
                     .frame(maxWidth: .infinity)
                 }
             }
         }
-        .padding(.horizontal)
-        .padding(.top, 6)
+        .padding(.horizontal, 12)
         .background(
-            Color(UIColor.systemBackground)
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .shadow(radius: 2)
+            BlurView(style: .systemUltraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                .shadow(radius: 8)
         )
-        .padding(.horizontal, 16)
+        .padding(.horizontal)
     }
 }
