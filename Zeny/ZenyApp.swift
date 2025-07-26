@@ -1,10 +1,4 @@
-//
-//  ZenyApp.swift
-//  Zeny
-//
-//  Created by 永田健人 on 2025/05/14.
-//
-
+// ZenyApp.swift
 import SwiftUI
 
 @main

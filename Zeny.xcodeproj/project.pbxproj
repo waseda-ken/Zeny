@@ -6,6 +6,7 @@
 	objectVersion = 77;
 	objects = {
 
+
 /* Begin PBXBuildFile section */
 		0C432F01EF43F35045AEDC9A /* Pods_ZenyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 007F98057B937938194C18C5 /* Pods_ZenyTests.framework */; };
 		1055673023E480F5672B1FA8 /* Pods_Zeny.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A2F513B3EC709533169DA9 /* Pods_Zeny.framework */; };
@@ -38,6 +39,7 @@
 		2187E4D72DD45CB400825483 /* Zeny.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zeny.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2187E4E42DD45CB600825483 /* ZenyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZenyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2187E4EE2DD45CB600825483 /* ZenyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZenyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+
 		24E386632DDD8FF600B12309 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		261D5CBA0AA5FF3E3065D6F4 /* Pods-ZenyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZenyTests.release.xcconfig"; path = "Target Support Files/Pods-ZenyTests/Pods-ZenyTests.release.xcconfig"; sourceTree = "<group>"; };
 		5E64D48938B39BF4D54A85DD /* Pods-Zeny-ZenyUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Zeny-ZenyUITests.release.xcconfig"; path = "Target Support Files/Pods-Zeny-ZenyUITests/Pods-Zeny-ZenyUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -45,6 +47,7 @@
 		8826FEBA90B83CF0BCF4D77F /* Pods-Zeny.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Zeny.debug.xcconfig"; path = "Target Support Files/Pods-Zeny/Pods-Zeny.debug.xcconfig"; sourceTree = "<group>"; };
 		C4A2F513B3EC709533169DA9 /* Pods_Zeny.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Zeny.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE8202DBDCE571AD4592661D /* Pods_Zeny_ZenyUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Zeny_ZenyUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -97,7 +100,6 @@
 		2187E4CE2DD45CB400825483 = {
 			isa = PBXGroup;
 			children = (
-				24E386632DDD8FF600B12309 /* .gitignore */,
 				2187E4D92DD45CB400825483 /* Zeny */,
 				2187E4E72DD45CB600825483 /* ZenyTests */,
 				2187E4F12DD45CB600825483 /* ZenyUITests */,
@@ -397,7 +399,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				24E386642DDD900000B12309 /* .gitignore in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
