@@ -32,6 +32,12 @@ class EventManager: ObservableObject {
         events.append(event)
         // didSetが呼ばれて自動的に保存される
     }
+    
+    // PurchaseRecordからEventを作成して追加するメソッド
+    func addEvent(from record: PurchaseRecord) {
+        let newEvent = Event(date: record.purchaseDate, amount: Int(record.totalAmount), category: record.category, storeName: record.storeName)
+        addEvent(newEvent)
+    }
 
     // イベントを更新する (Optional: 必要であれば実装)
     func updateEvent(_ updatedEvent: Event) {
@@ -45,6 +51,13 @@ class EventManager: ObservableObject {
     func deleteEvents(at offsets: IndexSet) {
         events.remove(atOffsets: offsets)
         // didSetが呼ばれて自動的に保存される
+    }
+    
+    // 特定のIDを持つイベントを削除する新しいメソッド
+    func deleteEvents(for ids: [UUID]) {
+        events.removeAll { event in
+            ids.contains(event.id)
+        }
     }
 
     // MARK: - 永続化メソッド
@@ -73,7 +86,10 @@ class EventManager: ObservableObject {
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 10))!, amount: 100000, category: "収入", storeName: "給与"),
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 15))!, amount: 50000, category: "固定費", storeName: "家賃"),
                 Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 8))!, amount: 3000, category: "医療費", storeName: "〇〇病院"),
-                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 25))!, amount: 800, category: "その他", storeName: "郵便局")
+                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 25))!, amount: 800, category: "その他", storeName: "郵便局"),
+                Event(date: Calendar.current.date(from: DateComponents(year: 2024, month: 12, day: 25))!, amount: 1000, category: "その他", storeName: "郵便局"),
+                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 23))!, amount: 70000, category: "食費", storeName: "コンビニ"),
+                Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 25))!, amount: 50000, category: "収入", storeName: "給与"),
             ]
         }
     }

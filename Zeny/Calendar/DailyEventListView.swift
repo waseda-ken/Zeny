@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DailyEventListView: View {
     @Binding var events: [Event] // 表示するイベントの配列
+    let onDelete: (IndexSet) -> Void // 削除アクションを受け取るクロージャを追加
 
     var body: some View {
         if events.isEmpty {
@@ -43,16 +44,7 @@ struct DailyEventListView: View {
                     }
                 }
                 .onDelete { indexSet in // イベント削除機能の追加
-                    // ここでイベントの削除を処理するロジックが必要になります。
-                    // DailyEventListViewがBindingで受け取っているeventsを直接削除する場合
-                    // 実際にはEventManagerのdeleteEventsメソッドを呼び出す形になります
-                    // 例: eventManager.deleteEvents(at: indexSet)
-                    // このDailyEventListViewはallEventsからフィルタリングされたリストを受け取っているため、
-                    // ここで直接削除すると、元のallEventsが更新されず問題が発生します。
-                    // このビューの親（ContentView）がイベント管理を担当しているため、
-                    // 削除操作は親ビューに「委任」するのが良いでしょう。
-                    // 現状の$events: [Event]では、直接削除すると元のデータソースには反映されません。
-                    // 解決策は後述します。
+                    self.onDelete(indexSet) // 受け取ったonDeleteクロージャを呼び出す
                 }
             }
             .listStyle(.plain) // リストのスタイルをシンプルに
@@ -64,5 +56,6 @@ struct DailyEventListView: View {
     DailyEventListView(events: .constant([
         Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 22))!, amount: 2500, category: "食費", storeName: "寿司屋大将"),
         Event(date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 22))!, amount: 500, category: "娯楽費", storeName: "映画館")
-    ]))
+    ]),
+    onDelete: { _ in }) // プレビュー用には空のクロージャを渡す
 }

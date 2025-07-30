@@ -29,11 +29,12 @@ struct MonthlyCategoryPieChartView: View {
                         innerRadius: 100, // ドーナツグラフにする場合
                         outerRadius: 150
                     )
+                    .foregroundStyle(data.color) // ここを直接data.colorにする
                     .foregroundStyle(by: .value("カテゴリ", data.category)) // カテゴリの色を適用
                     /*.annotation(position: .overlay) {
-                        Text(data.category)
+                        Text(String(format: "￥%.0f", data.amount))
                             .font(.caption)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.black)
                     }*/
                 }
             }
@@ -51,18 +52,23 @@ struct MonthlyCategoryPieChartView: View {
                 }
             }
             // ここから凡例のカスタマイズ
-            /*
             .chartLegend { // 凡例のコンテンツを定義
-                            ForEach(categorizedData, id: \.category) { data in
-                                HStack {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(data.color)
-                                        .frame(width: 10, height: 10)
-                                    Text(data.category)
-                                        .font(.title3) // ここでフォントサイズを調整（例: .body, .headline, .system(size: 16) など）
-                                }
+                // 例えば、複数の列で表示するなど、より複雑なレイアウトを試す
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], alignment: .leading) {
+                    ForEach(categorizedData, id: \.category) { data in
+                        HStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(data.color)
+                                .frame(width: 10, height: 10)
+                            Text("\(data.category)：\(Int(data.amount))円")
+                                .font(.system(size: 14)) // 例: サイズを14ポイントに
+                                .foregroundStyle(.black) // 例: プライマリ色に
                             }
-                        }*/
+                        }
+                }
+                .padding(.vertical)
+                .frame(height: 70) // ここにタブバーの高さに合わせたSpacerを追加
+            }
             .padding()
             .navigationTitle("カテゴリ別月次円グラフ")
         }

@@ -14,6 +14,9 @@ struct GraphScreenView: View {
         // EventManagerを環境オブジェクトとして注入
         GraphControlView()
             .environmentObject(eventManager)
+        
+        .padding()
+            .frame(height: 700) // ここにタブバーの高さに合わせたSpacerを追加
     }
 }
 

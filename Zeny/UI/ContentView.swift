@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab: TabItem = .calendar
+    // EventManagerのインスタンスを親ビューから受け取るように変更
+        @EnvironmentObject var eventManager: EventManager 
 
     var body: some View {
         ZStack {
@@ -19,14 +21,18 @@ struct ContentView: View {
     private var content: some View {
         switch selectedTab {
         case .calendar:
-            CalendarView()
+            CalendarScreenView()
         case .graph:
-            GraphView()
+            GraphScreenView()
         case .scan:
             ScanView()
         case .manual:
-            // onSave はダミーでも良いですが、実運用では ViewModel 呼び出しに変更してください
-            ManualInputView(record: nil) { _ in }
+            // onSave クロージャ内で eventManager を使用してデータを追加
+            ManualInputView(record: nil) { purchaseRecord in
+                self.eventManager.addEvent(from: purchaseRecord)
+                // 登録後に手入力画面を閉じるなど、追加の処理が必要であればここに記述
+                self.selectedTab = .calendar // カレンダー画面に戻る
+            }
         }
     }
 }

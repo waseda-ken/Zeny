@@ -22,24 +22,34 @@ struct CalendarScreenView: View {
     }
 
     var body: some View {
-        //NavigationView{
+        NavigationView{
             VStack(spacing: 0) { // スペーシングを0にして要素間の余白をなくす
                 CalendarControlView(selectedDate: $selectedDate, allEvents: $eventManager.events)
                 // 高さをより多く確保するか、必要に応じてnilにして自動計算させる
-                    .frame(height: 600) // 例: より高い固定値を指定
+                    .frame(height: 550) // 例: より高い固定値を指定
                     .aspectRatio(1.0, contentMode: .fit) // 幅に合わせて高さを調整 (正方形比率)
                 // または、カレンダー全体を画面いっぱいに広げたい場合
-                .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity)
                 
-                DailyEventListView(events: .constant(eventsForSelectedDate))
+                DailyEventListView(events: .constant(eventsForSelectedDate),
+                    // onDeleteアクションをDailyEventListViewに渡す
+                    onDelete: { indexSet in
+                        // フィルタリングされたeventsForSelectedDateから元のeventManager.events内の要素を特定して削除
+                        // 削除されるイベントのIDを特定
+                        let eventsToDelete = indexSet.map { self.eventsForSelectedDate[$0] }
+                        // eventManagerからこれらのイベントを削除
+                        self.eventManager.deleteEvents(for: eventsToDelete.map(\.id))
+                    }
+                )
                 
                 Spacer() // カレンダーを上部に押し上げる
                 
-                    //.padding()
+                .padding()
+                    .frame(height: 70) // ここにタブバーの高さに合わせたSpacerを追加
             }
             //.navigationTitle("Zeny") // ナビゲーションタイトル
             //.navigationBarTitleDisplayMode(.inline) // タイトルの表示モード
-        //}
+        }
     }
 }
 

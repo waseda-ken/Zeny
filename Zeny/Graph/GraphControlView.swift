@@ -9,6 +9,9 @@ import SwiftUI
 import Charts // Chartsフレームワークをインポート (念のため)
 
 struct GraphControlView: View {
+    // 現在選択されているタブのインデックスを保持するState変数
+    @State private var selectedTab: Int = 0 // ここを追加
+    
     @EnvironmentObject var eventManager: EventManager
     @State private var selectedMonthForPieChart: Date = Date() // 円グラフ用の月選択
     @State private var selectedYearForBarChart: Date = Date() // 棒グラフ用の年選択
@@ -31,8 +34,40 @@ struct GraphControlView: View {
 
     var body: some View {
         VStack {
+            // カスタムインジケーターの例 (簡単な例であり、選択状態の同期ロジックは別途必要)
+            HStack(spacing: 0) {
+                // 最初のタブ（月別カテゴリ円グラフ）のインジケーター
+                Text("カテゴリ別支出") // 表示したい説明文字
+                    .font(.system(size: 16)) // 例: サイズを14ポイントに
+                    //.foregroundStyle(.black) // 例: プライマリ色に
+                    .fontWeight(selectedTab == 0 ? .bold : .regular) // 選択されていれば太字
+                    .foregroundColor(selectedTab == 0 ? .blue : .black) // 選択されていれば青、そうでなければ灰色
+                    .padding(.horizontal, 40) // テキストの左右にパディング
+                    .padding(.vertical, 5) // テキストの上下にパディング
+                    .background(selectedTab == 0 ? Color.blue.opacity(0.2) : Color.clear) // 選択されていれば背景色を薄く表示
+                    .cornerRadius(5) // 角を丸くする
+                    .onTapGesture { // タップでタブを切り替えられるようにする
+                        selectedTab = 0
+                    }
+                                
+                // 2番目のタブ（年別月別棒グラフ）のインジケーター
+                Text("月別収支推移") // 表示したい説明文字
+                    .font(.system(size: 16)) // 例: サイズを14ポイントに
+                    //.foregroundStyle(.black) // 例: プライマリ色に
+                    .fontWeight(selectedTab == 1 ? .bold : .regular) // 選択されていれば太字
+                    .foregroundColor(selectedTab == 1 ? .blue : .black) // 選択されていれば青、そうでなければ灰色
+                    .padding(.horizontal, 40)
+                    .padding(.vertical, 5)
+                    .background(selectedTab == 1 ? Color.blue.opacity(0.2) : Color.clear)
+                    .cornerRadius(5)
+                    .onTapGesture {
+                        selectedTab = 1
+                    }
+            }
+            .padding(.bottom, 40) // 必要に応じてパディングを調整
+            
             // TabView を使用して、円グラフと棒グラフを横にスワイプで切り替える
-            TabView {
+            TabView (selection: $selectedTab) {
                 // 1つ目のグラフ：カテゴリごとの月単位円グラフ
                 VStack {
                     // 現在の月を表示
@@ -67,6 +102,7 @@ struct GraphControlView: View {
                 .tabItem {
                     Label("カテゴリ別", systemImage: "chart.pie.fill")
                 }
+                .tag(0)
 
                 // 2つ目のグラフ：月次収入・支出棒グラフ
                 VStack {
@@ -102,9 +138,11 @@ struct GraphControlView: View {
                 .tabItem {
                     Label("収支推移", systemImage: "chart.bar.fill")
                 }
+                .tag(1)
             }
             // TabViewのスタイル設定（ページングモードでインジケータを常に表示）
-            .tabViewStyle(.page(indexDisplayMode: .always))
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .padding(.bottom, 20) // 必要に応じてパディングを調整
         }
     }
 }

@@ -120,7 +120,11 @@ struct YearlyMonthlyBarChartView: View {
             AxisMarks(values: .stride(by: .month)) { value in
                 AxisGridLine()
                 AxisTick()
-                AxisValueLabel(format: .dateTime.month(.narrow)) // 月の略称を表示
+                AxisValueLabel{
+                    if let month = value.as(Date.self) {
+                        Text("\(Calendar.current.component(.month, from: month))")
+                    }
+                }// 月の略称を表示
             }
         }
         .chartYAxis {
