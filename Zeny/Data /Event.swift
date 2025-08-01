@@ -11,7 +11,7 @@ import UIKit // UIColor型を使用するため必要
 
 // MARK: - Event 構造体 (単一の定義)
 struct Event: Identifiable, Hashable, Codable {
-    let id = UUID()
+    var id = UUID()
     let date: Date
     let amount: Int // 金額
     let category: String // カテゴリ

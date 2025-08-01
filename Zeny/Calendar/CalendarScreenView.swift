@@ -1,58 +1,78 @@
-//
-//  ContentView.swift
-//  Zeny
-//
-//  Created by 永田健人 on 2025/05/14.
-//
-
+// Zeny/Calendar/CalendarScreenView.swift
 import SwiftUI
 
 struct CalendarScreenView: View {
-    @State private var selectedDate = Date() // カレンダーで選択された日付
+    @EnvironmentObject private var eventManager: EventManager
+    @State private var selectedDate: Date = Date()
     
-    // イベントデータを管理するEventManagerのインスタンス
-    // @StateObject を使用することで、アプリのライフサイクルを通じてインスタンスが保持される
-    @StateObject private var eventManager = EventManager()
-
-    // 選択された日付に該当するイベントをフィルタリング
-    private var eventsForSelectedDate: [Event] {
-        eventManager.events.filter { event in // eventManager.events からフィルタリング
-        Calendar.current.isDate(event.date, inSameDayAs: selectedDate)
+    // 選択日付に該当するイベント一覧
+    private var eventsForDate: [Event] {
+        eventManager.events.filter {
+            Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
         }
     }
-
+    
     var body: some View {
-        NavigationView{
-            VStack(spacing: 0) { // スペーシングを0にして要素間の余白をなくす
-                CalendarControlView(selectedDate: $selectedDate, allEvents: $eventManager.events)
-                // 高さをより多く確保するか、必要に応じてnilにして自動計算させる
-                    .frame(height: 550) // 例: より高い固定値を指定
-                    .aspectRatio(1.0, contentMode: .fit) // 幅に合わせて高さを調整 (正方形比率)
-                // または、カレンダー全体を画面いっぱいに広げたい場合
-                    .frame(maxWidth: .infinity)
-                
-                DailyEventListView(events: .constant(eventsForSelectedDate),
-                    // onDeleteアクションをDailyEventListViewに渡す
-                    onDelete: { indexSet in
-                        // フィルタリングされたeventsForSelectedDateから元のeventManager.events内の要素を特定して削除
-                        // 削除されるイベントのIDを特定
-                        let eventsToDelete = indexSet.map { self.eventsForSelectedDate[$0] }
-                        // eventManagerからこれらのイベントを削除
-                        self.eventManager.deleteEvents(for: eventsToDelete.map(\.id))
-                    }
+        NavigationStack {
+            VStack(spacing: 0) {
+                // カレンダー本体
+                CalendarControlView(
+                    selectedDate: $selectedDate,
+                    allEvents:    $eventManager.events
                 )
+                .frame(height: 400)
+                .padding(.top)
                 
-                Spacer() // カレンダーを上部に押し上げる
-                
-                .padding()
-                    .frame(height: 70) // ここにタブバーの高さに合わせたSpacerを追加
+                // 日別イベントリスト
+                List {
+                    if eventsForDate.isEmpty {
+                        Text("この日に記録はありません")
+                            .foregroundColor(.secondary)
+                    } else {
+                        ForEach(eventsForDate) { ev in
+                            NavigationLink {
+                                // 編集用画面に遷移
+                                ManualInputView(record: PurchaseRecord(
+                                    storeName:    ev.storeName,
+                                    purchaseDate: ev.date,
+                                    totalAmount:  Double(ev.amount),
+                                    category:     ev.category
+                                )) { newRec in
+                                    // 更新された内容で Event を上書き
+                                    let updated = Event(
+                                        id:        ev.id,                      // 既存の ID をそのまま使う
+                                        date:      newRec.purchaseDate,
+                                        amount:    Int(newRec.totalAmount),
+                                        category:  newRec.category,
+                                        storeName: newRec.storeName
+                                    )
+                                    eventManager.updateEvent(updated)
+                                }
+                            } label: {
+                                HStack {
+                                    Text(ev.storeName)
+                                    Spacer()
+                                    Text("¥\(ev.amount)")
+                                }
+                                .padding(.vertical, 8)
+                            }
+                        }
+                        .onDelete { offsets in
+                            let ids = offsets.map { eventsForDate[$0].id }
+                            eventManager.deleteEvents(for: ids)
+                        }
+                    }
+                }
+                .listStyle(.plain)
             }
-            //.navigationTitle("Zeny") // ナビゲーションタイトル
-            //.navigationBarTitleDisplayMode(.inline) // タイトルの表示モード
+            .navigationTitle("カレンダー")
         }
     }
 }
 
-#Preview {
-    CalendarScreenView()
+struct CalendarScreenView_Previews: PreviewProvider {
+    static var previews: some View {
+        CalendarScreenView()
+            .environmentObject(EventManager())
+    }
 }
