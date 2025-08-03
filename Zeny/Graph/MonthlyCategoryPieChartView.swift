@@ -70,7 +70,7 @@ struct MonthlyCategoryPieChartView: View {
                 .frame(height: 70) // ここにタブバーの高さに合わせたSpacerを追加
             }
             .padding()
-            .navigationTitle("カテゴリ別月次円グラフ")
+            //.navigationTitle("カテゴリ別月次円グラフ")
         }
     }
 

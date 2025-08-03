@@ -53,7 +53,7 @@ struct YearlyMonthlyBarChartView: View {
                             }
                     }
                     .padding()
-                    .navigationTitle("月次収入・支出棒グラフ")
+                    //.navigationTitle("月次収入・支出棒グラフ")
 
                 // タップされた月の詳細表示
                 if let data = selectedMonthData {
