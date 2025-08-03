@@ -32,6 +32,7 @@ struct ManualInputView: View {
                     TextField("¥0", text: $amount)
                         .keyboardType(.decimalPad)
                         .focused($focusedField, equals: .amount)
+                        .tint(.blue) // カーソルの色を赤に変更する例
                         .padding(8)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
@@ -47,6 +48,9 @@ struct ManualInputView: View {
                                     value: focusedField
                                 )
                         )
+                }
+                .onTapGesture { // ここにタップジェスチャーを追加
+                    focusedField = nil // フォーカスを解除
                 }
 
                 Section(header: Text("カテゴリ")) {
@@ -70,6 +74,7 @@ struct ManualInputView: View {
                 Section(header: Text("店名")) {
                     TextField("例：コンビニ", text: $storeName)
                         .focused($focusedField, equals: .storeName)
+                        .tint(.blue) // カーソルの色を赤に変更する例
                         .padding(8)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
@@ -96,7 +101,8 @@ struct ManualInputView: View {
                         saveEntry()
                     }
                     .frame(maxWidth: .infinity)
-                    .disabled(amount.isEmpty)
+                    .disabled(amount.isEmpty || storeName.isEmpty)
+                    .foregroundColor(amount.isEmpty || storeName.isEmpty ? .gray : .blue) // 有効・無効で文字色を変更
                 }
             }
             .navigationTitle("手入力")
