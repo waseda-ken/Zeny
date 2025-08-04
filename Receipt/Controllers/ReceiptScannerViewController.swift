@@ -9,25 +9,11 @@ import UIKit
 import AVFoundation
 import Vision
 
-final class ReceiptScannerViewController: UIViewController, AVCapturePhotoCaptureDelegate {
+final class ReceiptScannerViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: - UI & AVSession
     private let captureSession = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer!
-    //private var resultTextView: UITextView!
-    
-    // 修正: AVCapturePhotoOutputを追加
-        private let photoOutput = AVCapturePhotoOutput()
-    
-    // 修正: シャッターボタンを追加
-        private lazy var shutterButton: UIButton = {
-            let button = UIButton(type: .system)
-            button.tintColor = .white
-            button.setImage(UIImage(systemName: "camera.circle.fill"), for: .normal)
-            button.setPreferredSymbolConfiguration(.init(pointSize: 60), forImageIn: .normal)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.addTarget(self, action: #selector(didTapShutterButton), for: .touchUpInside)
-            return button
-        }()
+    private var resultTextView: UITextView!
 
     /// OCR完了時に呼び出すコールバック
     var onRecognized: ((String) -> Void)?
@@ -38,7 +24,7 @@ final class ReceiptScannerViewController: UIViewController, AVCapturePhotoCaptur
         super.viewDidLoad()
         view.backgroundColor = .black
         setupPreviewLayer()
-        setupShutterButton()
+        setupResultTextView()
         configureSession()
     }
 
@@ -46,12 +32,12 @@ final class ReceiptScannerViewController: UIViewController, AVCapturePhotoCaptur
         super.viewDidLayoutSubviews()
         previewLayer.frame = view.bounds
         let height: CGFloat = 150
-        /*resultTextView.frame = CGRect(
+        resultTextView.frame = CGRect(
             x: 0,
             y: view.bounds.height - height,
             width: view.bounds.width,
             height: height
-        )*/
+        )
     }
 
     // MARK: - Setup
@@ -61,24 +47,15 @@ final class ReceiptScannerViewController: UIViewController, AVCapturePhotoCaptur
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer)
     }
-    
-    // 修正: シャッターボタンのセットアップ
-    private func setupShutterButton() {
-        view.addSubview(shutterButton)
-        NSLayoutConstraint.activate([
-            shutterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            shutterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
-        ])
-    }
 
-    /*private func setupResultTextView() {
+    private func setupResultTextView() {
         resultTextView = UITextView()
         resultTextView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
         resultTextView.textColor = .white
         resultTextView.isEditable = false
         resultTextView.isSelectable = false
         view.addSubview(resultTextView)
-    }*/
+    }
 
     private func configureSession() {
         captureSession.beginConfiguration()
@@ -93,22 +70,9 @@ final class ReceiptScannerViewController: UIViewController, AVCapturePhotoCaptur
             return
         }
         captureSession.addInput(input)
-        
-        // 修正: ビデオ出力ではなく、写真出力を設定
-        if captureSession.canAddOutput(photoOutput) {
-            captureSession.addOutput(photoOutput)
-        }
-                
-        captureSession.commitConfiguration()
-                
-        // 修正: startRunningはviewDidLoadではなく、viewDidAppearなどで呼び出すのがより安全ですが、
-        // 今回はviewDidLoadの最後に配置
-        DispatchQueue.global(qos: .userInitiated).async {
-                self.captureSession.startRunning()
-        }
 
         // ビデオ出力
-        /*let dataOutput = AVCaptureVideoDataOutput()
+        let dataOutput = AVCaptureVideoDataOutput()
         dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
         guard captureSession.canAddOutput(dataOutput) else {
             captureSession.commitConfiguration()
@@ -116,12 +80,12 @@ final class ReceiptScannerViewController: UIViewController, AVCapturePhotoCaptur
         }
         captureSession.addOutput(dataOutput)
         captureSession.commitConfiguration()
-        captureSession.startRunning()*/
+        captureSession.startRunning()
     }
 
     // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 
-    /*func captureOutput(
+    func captureOutput(
         _ output: AVCaptureOutput,
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
@@ -131,46 +95,6 @@ final class ReceiptScannerViewController: UIViewController, AVCapturePhotoCaptur
         let context = CIContext()
         guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return }
         performOCR(on: UIImage(cgImage: cgImage))
-    }*/
-    
-    // 修正: シャッターボタンのアクション
-    @objc private func didTapShutterButton() {
-        var settings = AVCapturePhotoSettings()
-        // JPEGコーデックが利用可能か確認
-        if let jpegCodec = photoOutput.availablePhotoCodecTypes.first(where: { $0 == AVVideoCodecType.jpeg }) {
-            // 利用可能な場合はformatにコーデックを指定して初期化
-            settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: jpegCodec])
-        } else {
-            // JPEGが利用できない場合のフォールバック（デフォルト設定）
-            settings = AVCapturePhotoSettings()
-        }
-        
-        photoOutput.capturePhoto(with: settings, delegate: self)
-    }
-    
-    // 修正: 撮影完了後に呼ばれるデリゲートメソッドを実装
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        /*guard let data = photo.fileDataRepresentation(), let image = UIImage(data: data) else {
-            // エラーハンドリング
-            return
-        }*/
-        print("デリゲートメソッドが呼び出されました！") // <- この行を追加
-            
-        // エラーを確認
-        if let error = error {
-            print("写真撮影でエラーが発生しました: \(error.localizedDescription)")
-            return
-        }
-
-        // 写真データを取得
-        guard let data = photo.fileDataRepresentation(), let image = UIImage(data: data) else {
-            print("写真データの取得に失敗しました。")
-            return
-        }
-            
-           
-        // ここでOCR処理を実行
-        performOCR(on: image)
     }
 
     // MARK: - OCR ＋ レシート領域検出
@@ -213,13 +137,13 @@ final class ReceiptScannerViewController: UIViewController, AVCapturePhotoCaptur
                     DispatchQueue.main.async {
                         guard let self = self else { return }
                         if let e = err {
-                            //self.resultTextView.text = "OCRエラー: \(e.localizedDescription)"
+                            self.resultTextView.text = "OCRエラー: \(e.localizedDescription)"
                         } else {
                             let lines = (ocrReq.results as? [VNRecognizedTextObservation])?
                                 .compactMap { $0.topCandidates(1).first?.string }
                                 ?? []
                             let text = lines.joined(separator: "\n")
-                            //self.resultTextView.text = text
+                            self.resultTextView.text = text
                             self.onRecognized?(text)
                         }
                     }

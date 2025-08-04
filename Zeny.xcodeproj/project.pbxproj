@@ -45,6 +45,16 @@
 		D4CE4C6B54AE2455555DFC9B /* Pods_ZenyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZenyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		24A3C69A2E4066F900B1BE9B /* Exceptions for "Zeny" folder in "Zeny" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2187E4D62DD45CB400825483 /* Zeny */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		217F04222E3F679A00F81EE4 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -63,6 +73,9 @@
 		};
 		24BFDEDC2E34F4940088A656 /* Zeny */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				24A3C69A2E4066F900B1BE9B /* Exceptions for "Zeny" folder in "Zeny" target */,
+			);
 			path = Zeny;
 			sourceTree = "<group>";
 		};
@@ -566,6 +579,9 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Zeny/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -600,6 +616,9 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Zeny/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
